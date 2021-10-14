@@ -265,7 +265,7 @@ func (p *ReverseProxy) ProxyHTTP(rw http.ResponseWriter, req *http.Request) {
 	res, err := transport.RoundTrip(outreq)
 	if err != nil {
 		p.logf("http: proxy error: %v", err)
-		rw.WriteHeader(http.StatusBadGateway)
+		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
@@ -275,7 +275,7 @@ func (p *ReverseProxy) ProxyHTTP(rw http.ResponseWriter, req *http.Request) {
 	if p.ModifyResponse != nil {
 		if err := p.ModifyResponse(res); err != nil {
 			p.logf("http: proxy error: %v", err)
-			rw.WriteHeader(http.StatusBadGateway)
+			rw.WriteHeader(http.StatusBadRequest)
 			return
 		}
 	}
@@ -304,7 +304,7 @@ func (p *ReverseProxy) ProxyHTTP(rw http.ResponseWriter, req *http.Request) {
 
 	b, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		rw.WriteHeader(http.StatusBadGateway)
+		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
 

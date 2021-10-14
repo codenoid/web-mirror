@@ -182,14 +182,6 @@ func (m *maxLatencyWriter) stop() {
 	m.done <- true
 }
 
-func (p *ReverseProxy) logf(format string, args ...interface{}) {
-	if p.ErrorLog != nil {
-		p.ErrorLog.Printf(format, args...)
-	} else {
-		log.Printf(format, args...)
-	}
-}
-
 func removeHeaders(header http.Header) {
 	// Remove hop-by-hop headers listed in the "Connection" header.
 	if c := header.Get("Connection"); c != "" {
@@ -264,7 +256,7 @@ func (p *ReverseProxy) ProxyHTTP(rw http.ResponseWriter, req *http.Request) {
 
 	res, err := transport.RoundTrip(outreq)
 	if err != nil {
-		p.logf("http: proxy error: %v", err)
+		log.Printf("http: proxy error: %v", err)
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -274,7 +266,7 @@ func (p *ReverseProxy) ProxyHTTP(rw http.ResponseWriter, req *http.Request) {
 
 	if p.ModifyResponse != nil {
 		if err := p.ModifyResponse(res); err != nil {
-			p.logf("http: proxy error: %v", err)
+			log.Printf("http: proxy error: %v", err)
 			rw.WriteHeader(http.StatusBadRequest)
 			return
 		}
@@ -323,19 +315,19 @@ func (p *ReverseProxy) ProxyHTTP(rw http.ResponseWriter, req *http.Request) {
 func (p *ReverseProxy) ProxyHTTPS(rw http.ResponseWriter, req *http.Request) {
 	hij, ok := rw.(http.Hijacker)
 	if !ok {
-		p.logf("http server does not support hijacker")
+		log.Printf("http server does not support hijacker")
 		return
 	}
 
 	clientConn, _, err := hij.Hijack()
 	if err != nil {
-		p.logf("http: proxy error: %v", err)
+		log.Printf("http: proxy error: %v", err)
 		return
 	}
 
 	proxyConn, err := net.Dial("tcp", req.URL.Host)
 	if err != nil {
-		p.logf("http: proxy error: %v", err)
+		log.Printf("http: proxy error: %v", err)
 		return
 	}
 
@@ -352,19 +344,19 @@ func (p *ReverseProxy) ProxyHTTPS(rw http.ResponseWriter, req *http.Request) {
 
 	err = clientConn.SetDeadline(deadline)
 	if err != nil {
-		p.logf("http: proxy error: %v", err)
+		log.Printf("http: proxy error: %v", err)
 		return
 	}
 
 	err = proxyConn.SetDeadline(deadline)
 	if err != nil {
-		p.logf("http: proxy error: %v", err)
+		log.Printf("http: proxy error: %v", err)
 		return
 	}
 
 	_, err = clientConn.Write([]byte("HTTP/1.0 200 OK\r\n\r\n"))
 	if err != nil {
-		p.logf("http: proxy error: %v", err)
+		log.Printf("http: proxy error: %v", err)
 		return
 	}
 

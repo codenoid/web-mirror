@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -8,12 +9,14 @@ import (
 
 func main() {
 
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
+
 	bindAddr := os.Getenv("BIND")
 	if bindAddr == "" {
 		bindAddr = ":7000"
 	}
 
-	println("Starting server on " + bindAddr)
+	log.Println("Starting server on " + bindAddr)
 
 	err := http.ListenAndServe(bindAddr, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		originUrl := r.URL.Query().Get("mirror")

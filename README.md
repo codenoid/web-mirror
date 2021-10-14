@@ -24,6 +24,4 @@ export BIND="0.0.0.0:7000"
 1. Put requested url to ?mirror= args
 2. the payload must be url encoded
 
-```sh
 Open [http://localhost:7000/?mirror=https%3A%2F%2Fwww.tiktok.com%2F%40khaby.lame](http://localhost:7000/?mirror=https%3A%2F%2Fwww.tiktok.com%2F%40khaby.lame)
-```

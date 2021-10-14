@@ -1,5 +1,7 @@
 # Web Mirror
 
+![screenshot](screenshot.png)
+
 Based on [reverseproxy](https://github.com/cssivision/reverseproxy)
 
 Solution for:

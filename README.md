@@ -9,6 +9,7 @@ Solution for:
 1. Website that only set 'X-Frame-Options' to 'sameorigin'.
 2. Hide website real url
 3. Content interception & manipulation [reverseproxy.go#L311](https://github.com/codenoid/web-mirror/blob/master/reverseproxy.go#L311)
+4. User Agent set (mobile|desktop)
 
 ## Setup
 
@@ -24,6 +25,7 @@ export BIND="0.0.0.0:7000"
 ## Usage
 
 1. Put requested url to ?mirror= args
-2. the payload must be url encoded
+2. Set User-Agent with &ua=mobile|desktop (the used UA are most-common used on the earth)
+3. the payload must be url encoded
 
-Open [http://localhost:7000/?mirror=https%3A%2F%2Fwww.tiktok.com%2F%40khaby.lame](http://localhost:7000/?mirror=https%3A%2F%2Fwww.tiktok.com%2F%40khaby.lame)
+Open [http://localhost:7000/?mirror=https%3A%2F%2Fwww.tiktok.com%2F%40khaby.lame&ua=mobile](http://localhost:7000/?mirror=https%3A%2F%2Fwww.tiktok.com%2F%40khaby.lame&ua=mobile)

@@ -26,6 +26,15 @@ func main() {
 			w.Write([]byte("Invalid mirror url"))
 			return
 		}
+
+		userAgent := r.URL.Query().Get("ua")
+		switch userAgent {
+		case "mobile":
+			r.Header.Set("User-Agent", mobileUA)
+		case "desktop":
+			r.Header.Set("User-Agent", desktopUA)
+		}
+
 		proxy := NewReverseProxy(path)
 		proxy.ServeHTTP(w, r)
 	}))

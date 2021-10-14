@@ -8,7 +8,7 @@ Solution for:
 
 1. Website that only set 'X-Frame-Options' to 'sameorigin'.
 2. Hide website real url
-3. Content interception & manipulation
+3. Content interception & manipulation [reverseproxy.go#L311](https://github.com/codenoid/web-mirror/blob/master/reverseproxy.go#L311)
 
 ## Setup
 

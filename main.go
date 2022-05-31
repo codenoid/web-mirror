@@ -20,6 +20,7 @@ func main() {
 
 	err := http.ListenAndServe(bindAddr, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		originUrl := r.URL.Query().Get("mirror")
+		hide := r.URL.Query().Get("hide")
 		path, err := url.Parse(originUrl)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
@@ -35,7 +36,7 @@ func main() {
 			r.Header.Set("User-Agent", desktopUA)
 		}
 
-		proxy := NewReverseProxy(path)
+		proxy := NewReverseProxy(path, hide)
 		proxy.ServeHTTP(w, r)
 	}))
 

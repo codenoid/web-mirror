@@ -3,6 +3,7 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -50,6 +51,8 @@ type ReverseProxy struct {
 	// modifies the Response from the backend.
 	// If it returns an error, the proxy returns a StatusBadGateway error.
 	ModifyResponse func(*http.Response) error
+
+	hide string
 }
 
 type requestCanceler interface {
@@ -65,7 +68,7 @@ type requestCanceler interface {
 // NewReverseProxy does not rewrite the Host header.
 // To rewrite Host headers, use ReverseProxy directly with a custom
 // Director policy.
-func NewReverseProxy(target *url.URL) *ReverseProxy {
+func NewReverseProxy(target *url.URL, hide string) *ReverseProxy {
 	targetQuery := target.RawQuery
 	director := func(req *http.Request) {
 		req.URL.Scheme = target.Scheme
@@ -87,7 +90,7 @@ func NewReverseProxy(target *url.URL) *ReverseProxy {
 		}
 	}
 
-	return &ReverseProxy{Director: director}
+	return &ReverseProxy{Director: director, hide: hide}
 }
 
 func singleJoiningSlash(a, b string) string {
@@ -302,6 +305,13 @@ func (p *ReverseProxy) ProxyHTTP(rw http.ResponseWriter, req *http.Request) {
 
 	// You can intercept the response body
 	body := string(b)
+	if p.hide != "" {
+		if decoded, err := url.QueryUnescape(p.hide); err == nil {
+			style := `<style>%v { display: none !important; }</style>`
+			style = fmt.Sprintf(style, decoded)
+			body += style
+		}
+	}
 
 	res.Body = ioutil.NopCloser(bytes.NewReader([]byte(body)))
 
